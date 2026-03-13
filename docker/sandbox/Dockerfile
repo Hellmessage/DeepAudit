@@ -60,7 +60,7 @@ RUN unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY && \
 
 # 安装 Python 安全工具
 RUN unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY && \
-    pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple \
+    pip install --no-cache-dir -i https://mirrors.aliyun.com/pypi/simple \
     requests \
     httpx \
     aiohttp \

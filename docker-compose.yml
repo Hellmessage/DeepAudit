@@ -56,7 +56,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - AGENT_ENABLED=true
       - SANDBOX_ENABLED=true
-      - SANDBOX_IMAGE=ghcr.io/lintsinghua/deepaudit-sandbox:latest
+      - SANDBOX_IMAGE=deepaudit/sandbox:latest
       # LLM 配置 - 请根据需要修改
       - LLM_PROVIDER=${LLM_PROVIDER:-openai}
       - LLM_MODEL=${LLM_MODEL:-gpt-4o}
@@ -81,20 +81,6 @@ services:
     networks:
       - deepaudit-network
 
-  # 数据库迁移服务 - 在后端启动前自动执行
-  db-migrate:
-    image: ghcr.io/lintsinghua/deepaudit-backend:latest
-    container_name: deepaudit-db-migrate
-    restart: "no"
-    environment:
-      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db:5432/deepaudit
-    command: [".venv/bin/alembic", "upgrade", "head"]
-    depends_on:
-      db:
-        condition: service_healthy
-    networks:
-      - deepaudit-network
-
   frontend:
     image: ghcr.io/lintsinghua/deepaudit-frontend:latest
     container_name: deepaudit-frontend
@@ -112,13 +98,6 @@ services:
       - backend
     networks:
       - deepaudit-network
-
-  # 预拉取沙箱镜像（后端会按需调用）
-  sandbox-pull:
-    image: ghcr.io/lintsinghua/deepaudit-sandbox:latest
-    container_name: deepaudit-sandbox-pull
-    restart: "no"
-    command: echo "Sandbox image ready"
 
 networks:
   deepaudit-network:
