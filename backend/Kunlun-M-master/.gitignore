@@ -1,0 +1,132 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*,cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+#Ipython Notebook
+.ipynb_checkpoints
+
+# PyCharm project config
+.idea/
+
+# macOS tmp
+.DS_Store
+
+# Cobra config file
+config
+*.log*
+
+# tmp
+tmp/
+
+# Cobra automation report image file
+scheduler/reports/
+
+# venv
+cobra-venv/*
+venv/*
+
+# phply
+parsetab.py
+
+# result
+result/*
+*.csv
+
+# real_test
+tests/real_test/*
+tests/*
+
+# new rule for test
+rules/tamper/*
+!rules/tamper/demo.py
+!rules/tamper/wordpress.py
+!rules/tamper/__init__.py
+
+rules/*
+!rules/rule.template
+!rules/tamper.template
+!rules/*/demo.py
+!rules/javascript/CVI_3003.py
+!rules/solidity/CVI_2001.py
+!rules/base/*
+
+# upload
+uploads/*.zip
+uploads/*
+
+# sqlite
+db.sqlite3
+db.sqlite3*
+
+venv/*
+settings.py
+
+# webdriver
+bin/*
+ghostdriver.log
+debug.log
+
+# db
+*.db
+
+# django
+manage.py
+
+# auto-generated-files
+web/backend/migrations/0002_delete_tasks.py
+web/dashboard/migrations/*_auto_*.py
+
+# dockerfile
+Dockerfile

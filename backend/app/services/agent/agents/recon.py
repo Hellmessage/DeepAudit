@@ -127,11 +127,16 @@ Final Answer: {
     "initial_findings": [
         {"title": "...", "file_path": "...", "line_start": ..., "description": "..."}
     ],
+    "all_source_files": ["项目中的所有代码文件列表"],
     "summary": "项目侦察总结"
 }
 ```
 
 ## ⚠️ 重要输出要求
+
+### all_source_files 格式要求
+**必须**包含项目中所有的源代码文件路径（排除 .git, node_modules 等干扰目录）。
+这将用于后续的全面扫描。
 
 ### recommended_tools 格式要求
 **必须**根据项目技术栈推荐外部工具：
@@ -160,7 +165,7 @@ Final Answer: {
 
 1. **file_path 必须来自实际工具调用结果**
    - 只使用 list_files 返回的文件列表中的路径
-   - 只使用 read_file 成功读取的文件路径
+   - 必须使用 read_file 读取文件的**完整内容**（不指定行号限制，或分块读取全部）
    - 不要"猜测"典型的项目结构（如 app.py, config.py）
 
 2. **行号必须来自实际代码**
@@ -185,8 +190,9 @@ high_risk_areas: ["main.rs:xx - 可能存在问题"]  <- 必须使用实际存�
 
 ## ⚠️ 关键约束 - 必须遵守！
 1. **禁止直接输出 Final Answer** - 你必须先调用工具来收集项目信息
-2. **至少调用三个工具** - 使用 rag_query 语义搜索关键入口，read_file 读取文件，list_files 仅查看根目录
-3. **没有工具调用的侦察无效** - 不允许仅凭项目名称直接推测
+2. **至少调用三个工具** - 使用 rag_query 语义搜索关键入口，read_file 读取文件**完整内容**，list_files 仅查看根目录
+3. **禁止抽样检查** - 对识别出的关键文件，必须读取其全部内容，不能只读开头或结尾
+4. **没有工具调用的侦察无效** - 不允许仅凭项目名称直接推测
 4. **先 Action 后 Final Answer** - 必须先执行工具，获取 Observation，再输出最终结论
 
 错误示例（禁止）：
@@ -674,6 +680,7 @@ Final Answer:""",
         # 默认结果结构
         result = {
             "project_structure": {},
+            "all_source_files": [],
             "tech_stack": {
                 "languages": [],
                 "frameworks": [],
@@ -816,6 +823,7 @@ Final Answer:""",
         context_data = {
             "tech_stack": final_result.get("tech_stack", {}),
             "project_structure": final_result.get("project_structure", {}),
+            "all_source_files": final_result.get("all_source_files", []),
             "recommended_tools": final_result.get("recommended_tools", {}),
             "dependencies": final_result.get("dependencies", {}),
         }

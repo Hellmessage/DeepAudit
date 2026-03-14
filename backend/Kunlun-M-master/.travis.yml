@@ -1,0 +1,13 @@
+language: python
+python:
+  - "3.6"
+  - "3.7"
+install:
+  - pip install coveralls
+  - pip install -r requirements.txt
+  - mv Kunlun_M/settings.py.bak Kunlun_M/settings.py
+script:
+  - py.test
+  - coverage run --source=core -m pytest
+after_success:
+  - coveralls

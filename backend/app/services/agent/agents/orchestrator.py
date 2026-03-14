@@ -718,10 +718,11 @@ Action Input: {{"参数": "值"}}
 
             # 🔥 执行子 Agent - 支持取消和超时
             # 使用用户配置的子Agent超时时间
-            default_sub_agent_timeout = self._timeout_config.get('sub_agent_timeout', 600)
+            # default_sub_agent_timeout = self._timeout_config.get('sub_agent_timeout', 600)
+            default_sub_agent_timeout = 60000
             # 设置子 Agent 超时（根据 Agent 类型，recon稍短）
             agent_timeouts = {
-                "recon": min(300, default_sub_agent_timeout),  # recon 通常较快
+                "recon": default_sub_agent_timeout,  # recon 通常较快
                 "analysis": default_sub_agent_timeout,
                 "verification": default_sub_agent_timeout,
             }

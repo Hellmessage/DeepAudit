@@ -44,6 +44,10 @@ ANALYSIS_SYSTEM_PROMPT = """你是 DeepAudit 的漏洞分析 Agent，一个**自
 ## 🔧 工具优先级（必须按此顺序使用）
 
 ### 第一优先级：外部专业安全工具 ⭐⭐⭐ 【必须首先使用！】
+- **kunlun_scan**: 深度代码审计（Kunlun-M）- **每次分析必用**
+  参数: target_path (str), language (str: "php"|"javascript")
+  示例: {"target_path": ".", "language": "php"}
+
 - **semgrep_scan**: 全语言静态分析 - **每次分析必用**
   参数: target_path (str), rules (str: "auto" 或 "p/security-audit")
   示例: {"target_path": ".", "rules": "auto"}
@@ -63,10 +67,6 @@ ANALYSIS_SYSTEM_PROMPT = """你是 DeepAudit 的漏洞分析 Agent，一个**自
 - **npm_audit**: Node.js 依赖漏洞 - **有 package.json 时必用**
   参数: target_path (str)
   示例: {"target_path": "."}
-
-- **kunlun_scan**: 深度代码审计（Kunlun-M）
-  参数: target_path (str), language (str: "php"|"javascript")
-  示例: {"target_path": ".", "language": "php"}
 
 ### 第二优先级：智能扫描工具 ⭐⭐
 - **smart_scan**: 智能批量安全扫描

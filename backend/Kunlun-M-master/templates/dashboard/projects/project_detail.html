@@ -1,0 +1,248 @@
+{% extends "dashboard/base.html" %}
+{% block title %}Project Detail{% endblock %}
+
+{% block body %}
+<div>
+
+<div class="box box-primary">
+<div class="box-header with-border
+">
+  <h3 class="box-title">Project Details</h3>
+</div>
+<div class="box-body">
+  <!-- Date -->
+  <!-- Date and time range -->
+  <div class="form-group">
+    <label>Project Name:</label>
+
+    <div class="input-group">
+      <input type="text" class="form-control pull-right" name="project_name" value="{{ project.project_name }}" disabled>
+    </div>
+    <!-- /.input group -->
+  </div>
+
+  <div class="form-group">
+    <label>Origin:</label>
+
+      <input type="text" class="form-control pull-right" name="project_origin" value="{{ project.project_origin }}" disabled>
+    </div>
+
+  <div class="form-group">
+      <label>Description:</label>
+      <textarea class="form-control" rows="3" placeholder="Some details about project" name="project_desc" disabled>{{ project.project_desc }}</textarea>
+    </div>
+
+
+    <!-- /.input group -->
+  </div>
+  <!-- /.form group -->
+</div>
+<!-- /.box-body -->
+</div>
+
+<div class="box box-warning">
+<div class="box-header with-border">
+  <h3 class="box-title">Tasks List</h3>
+</div>
+<!-- /.box-header -->
+<div class="box">
+
+<!-- /.box-header -->
+<div class="box-body table-responsive no-padding">
+  <table class="table table-hover">
+    <tbody><tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Time</th>
+      <th>Status</th>
+      <th>Detail</th>
+    </tr>
+    {% for task in tasks %}
+    <tr>
+        <td><a href="{% url 'dashboard:task_detail' task.id %}">{{ task.id }} {{ task.task_name }}</a></td>
+          <td>{{ task.target_path }}</td>
+          <td>{{ task.last_scan_time }}</td>
+          <td>
+          {% if task.is_finished == 0 %}
+          <span class="label label-danger">Error</span>
+          {% elif task.is_finished == -1 %}
+          <span class="label label-danger">Error</span>
+          {% elif task.is_finished == 2 %}
+          <span class="label label-warning">Running</span>
+          {% elif task.is_finished == 1 %}
+          <span class="label label-success">Success</span>
+          {% else %}
+          <span class="label label-success">{{ task.is_finished }}</span>
+          {% endif %}
+          </td>
+          <td>
+          <div class="sparkbar" data-color="#00a65a" data-height="20">{{ task.parameter_config }}</div>
+        </td>
+      </tr>
+    {% endfor %}
+  </tbody></table>
+</div>
+</div>
+<!-- /.box-body -->
+</div>
+
+<div class="box box-warning">
+<div class="box-header with-border">
+  <h3 class="box-title">Results</h3>
+</div>
+<!-- /.box-header -->
+<div class="box-body">
+    <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+                <tbody><tr>
+                  <th>ID</th>
+                  <th>CVI ID</th>
+                  <th>Language</th>
+                  <th>VulFile Path/Title</th>
+                  <th>Source</th>
+                  <th>Level</th>
+                  <th>Type</th>
+                  <th>Is Confirm</th>
+                  <th>Operate</th>
+                </tr>
+                {% for taskresult in taskresults %}
+                <tr>
+                    <td>{{ taskresult.id }}</td>
+                    <td>{{ taskresult.cvi_id }}</td>
+                    <td>{{ taskresult.language }}</td>
+                    {% if taskresult.cvi_id == '9999' %}
+                        <td><a href="{% url 'dashboard:vendor_vulns_details' taskresult.vid %}">{{ taskresult.vulfile_path }}</a></td>
+                    {% else %}
+                        <td>{{ taskresult.vulfile_path }}</td>
+                    {% endif %}
+
+                    {% if taskresult.result_type == 'vendor_source_match' %}
+                        <td>
+                        {% for rs in taskresult.source_code %}
+                        <a href="{{ rs }}">{{ rs }}</a><br>
+                        {% endfor %}
+                        </td>
+                    {% else %}
+                    <td>{{ taskresult.source_code }}</td>
+                    {% endif %}
+                    <td>{{ taskresult.level }}</td>
+                    <td>{{ taskresult.result_type }}</td>
+
+                      <td>
+                      {% if taskresult.is_unconfirm == 0 %}
+                      <span class="label label-success">Yes</span>
+                      {% elif  taskresult.is_unconfirm  == 1 %}
+                      <span class="label label-danger">No</span>
+                      {% else %}
+                      <span class="label label-success">{{ taskresult.is_unconfirm }}</span>
+                      {% endif %}
+                      </td>
+                    <td><button id="resultdel" type="button" class="btn-shadow dropdown-toggle btn btn-danger" onclick="delVul('{{ taskresult.id }}')">Delete</button></td>
+                  </tr>
+                {% endfor %}
+              </tbody></table>
+    </div>
+
+    {% csrf_token %}
+
+</div>
+</div>
+<!-- /.box-body -->
+
+
+<div class="box box-success">
+    <div class="box-header with-border">
+      <h3 class="box-title">dependencies Vendors</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive no-padding">
+      <table class="table table-hover">
+            <tbody><tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Version</th>
+              <th>Language</th>
+              <th>Remark</th>
+              <th>Ext</th>
+            </tr>
+            {% for project_vendor in project_vendors %}
+            <tr>
+                <td>{{ project_vendor.id }}</td>
+                <td>{{ project_vendor.name }}</td>
+                <td>{{ project_vendor.version }}</td>
+                <td>{{ project_vendor.language }}</td>
+                <td>{{ project_vendor.source }}</td>
+                <td>{{ project_vendor.ext }}</td>
+
+              </tr>
+            {% endfor %}
+          </tbody></table>
+    </div>
+<!-- /.box-body -->
+</div>
+
+<div class="box box-success">
+    <div class="box-header with-border">
+      <h3 class="box-title">New Evil Functions</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body table-responsive no-padding">
+      <table class="table table-hover">
+            <tbody><tr>
+              <th>ID</th>
+              <th>CVI ID</th>
+              <th>New Function</th>
+              <th>Origin Function</th>
+              <th>Is Active</th>
+            </tr>
+            {% for newevilfunc in newevilfuncs %}
+            <tr>
+                <td>{{ newevilfunc.id }}</td>
+                <td>{{ newevilfunc.svid }}</td>
+                <td>{{ newevilfunc.func_name }}</td>
+                <td>{{ newevilfunc.origin_func_name }}</td>
+
+                  <td>
+                  {% if newevilfunc.is_active %}
+                  <span class="label label-success">Yes</span>
+                  {% elif not newevilfunc.is_active %}
+                  <span class="label label-danger">No</span>
+                  {% else %}
+                  <span class="label label-success">{{ newevilfunc.is_active }}</span>
+                  {% endif %}
+                  </td>
+
+              </tr>
+            {% endfor %}
+          </tbody></table>
+    </div>
+<!-- /.box-body -->
+</div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+function delVul(vulid){
+  $.get("{% url 'dashboard:vul_del' 654321 %}".replace('654321', vulid), function(data){
+      if(data.code == 200){
+          location.reload();
+      }else{
+          alert(data.message)
+      }
+  })
+}
+
+$(document).ready(function(){
+  $("#dashboard").removeClass("active menu-open");
+  $("#dashboard").find("ul li").removeClass("active");
+  $("#projects").addClass("menu-open");
+  $("#projects").find("ul").find("li#task_list").addClass("active");
+  $("#projects").find("ul").css("display","block");
+
+});
+</script>
+{% endblock %}
